@@ -1,33 +1,43 @@
 package main
 
-// Request is..
+import "fmt"
+
+// Request is...
 type Request struct {
 	method      string
 	requestPath string
 }
 
+//ipLogs is...
 type ipLogs struct {
 	requests     map[Request]int
 	browsers     map[string]int
 	requestCount int
 }
 
-func (ipl *ipLogs) checkBrowser(b string) {
-	if _, ok := (*ipl).browsers[b]; ok {
-		(*ipl).browsers[b]++
-		return
-	}
-
-	(*ipl).browsers[b] = 1
+// stringer for iplogs struct
+func (ipl *ipLogs) String() string {
+	return fmt.Sprintf("%d request(s) have been made to the following endpoints: \n %v \n From the following browser(s): \n %v", ipl.requestCount, ipl.requests, ipl.browsers)
 }
 
-func (ipl *ipLogs) checkRequest(r Request) {
-	if _, ok := (*ipl).requests[r]; ok {
-		(*ipl).requests[r]++
+// check if a given browser exists in our logs for a given ip
+func (ipl *ipLogs) checkBrowser(b string) {
+	if _, ok := ipl.browsers[b]; ok {
+		ipl.browsers[b]++
 		return
 	}
 
-	(*ipl).requests[r] = 1
+	ipl.browsers[b] = 1
+}
+
+// check if a request exists in our logs for a given ip
+func (ipl *ipLogs) checkRequest(r Request) {
+	if _, ok := ipl.requests[r]; ok {
+		ipl.requests[r]++
+		return
+	}
+
+	ipl.requests[r] = 1
 }
 
 // For given a given request line from STDIN create and return a Request
