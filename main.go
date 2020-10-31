@@ -34,7 +34,7 @@ func getIPaddress(s string) string {
 }
 
 // if the unique flag is set, print all the unique ips that sent a request to our server
-func printUniqueIPs(logs map[string]*ipLogs) {
+func printUniqueIPs(logs Logs) {
 	for key := range logs {
 		fmt.Println(key)
 	}
@@ -115,7 +115,7 @@ func main() {
 	verbose := flag.Bool("verbose", false, "output more information about things")
 
 	var banMode string
-	flag.StringVar(&banMode, "banmode", "", "ban mode according to a rule set")
+	flag.StringVar(&banMode, "banmode", "", "ban mode according to a rule set. Available modes: browser / request-path / request-method")
 
 	var wordlist string
 	flag.StringVar(&wordlist, "wordlist", "", "comma separated list of endpoints")
@@ -151,7 +151,10 @@ func main() {
 
 	if *verbose && banMode == "" {
 		for key, value := range logs {
-			fmt.Println(key, value)
+			fmt.Println(key)
+			for req := range value.requests {
+				fmt.Println("\t", req)
+			}
 		}
 		return
 	}

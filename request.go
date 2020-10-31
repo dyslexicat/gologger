@@ -15,6 +15,11 @@ type ipLogs struct {
 	requestCount int
 }
 
+// stringer for Request struct
+func (req Request) String() string {
+	return fmt.Sprintf("%s request to the following endpoint: %s", req.method, req.requestPath)
+}
+
 // stringer for iplogs struct
 func (ipl *ipLogs) String() string {
 	return fmt.Sprintf("%d request(s) have been made to the following endpoints: \n %v \n From the following browser(s): \n %v", ipl.requestCount, ipl.requests, ipl.browsers)
