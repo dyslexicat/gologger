@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"unicode"
@@ -12,13 +11,6 @@ import (
 
 // Logs is..
 type Logs map[string]*ipLogs
-
-// error checking
-func check(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
 
 // get the IP address from a given string from our logs
 func getIPaddress(s string) string {
@@ -105,22 +97,17 @@ func handleScanLine(line string, banMode string) {
 }
 
 func main() {
-	// f, err := os.Open("./logs/access.log")
-	// check(err)
-
-	// defer f.Close()
-
-	uniqueFlag := flag.Bool("unique", false, "Print unique IPs in log.")
-	verbose := flag.Bool("verbose", false, "Output more information about things")
+	uniqueFlag := flag.Bool("u", false, "Prints unique IPs in logs. Usage: ./main --u")
+	verbose := flag.Bool("v", false, "Output more information about things. Usage: ./main --v")
 
 	var banMode string
-	flag.StringVar(&banMode, "banmode", "", "Available modes: browser / request-path / request-method")
+	flag.StringVar(&banMode, "b", "", "Use together with the --w flag. Available modes: browser / request-path / request-method")
 
 	var wordlist string
-	flag.StringVar(&wordlist, "wordlist", "", "Comma separated list of rules")
+	flag.StringVar(&wordlist, "w", "", "Comma separated list of rules. Examples: --w=python,perl")
 
 	var concurrency int
-	flag.IntVar(&concurrency, "c", 20, "set the concurrency level")
+	flag.IntVar(&concurrency, "c", 20, "Set the concurrency level. Currently not implemented.")
 
 	flag.Parse()
 
