@@ -80,7 +80,7 @@ func handleLogging(ip string, browser string, request Request) {
 var logs = make(Logs)
 var rules []string
 
-// for a given line from our scanner separate ip, browser, and request then handle the case according to the banFlag
+// for a given line from our scanner separate ip, browser, and request then handle the case according to the banMode
 func handleScanLine(line string, banMode string) {
 	split := strings.Split(line, "\"")
 	ip := getIPaddress(split[0])
@@ -105,20 +105,19 @@ func handleScanLine(line string, banMode string) {
 }
 
 func main() {
-	f, err := os.Open("./logs/access.log")
-	check(err)
+	// f, err := os.Open("./logs/access.log")
+	// check(err)
 
-	defer f.Close()
+	// defer f.Close()
 
-	uniqueFlag := flag.Bool("unique", false, "print unique IPs in log")
-	banFlag := flag.Bool("ban", false, "ban ips for a given ip list")
-	verbose := flag.Bool("verbose", false, "output more information about things")
+	uniqueFlag := flag.Bool("unique", false, "Print unique IPs in log.")
+	verbose := flag.Bool("verbose", false, "Output more information about things")
 
 	var banMode string
-	flag.StringVar(&banMode, "banmode", "", "ban mode according to a rule set. Available modes: browser / request-path / request-method")
+	flag.StringVar(&banMode, "banmode", "", "Available modes: browser / request-path / request-method")
 
 	var wordlist string
-	flag.StringVar(&wordlist, "wordlist", "", "comma separated list of endpoints")
+	flag.StringVar(&wordlist, "wordlist", "", "Comma separated list of rules")
 
 	var concurrency int
 	flag.IntVar(&concurrency, "c", 20, "set the concurrency level")
@@ -129,19 +128,12 @@ func main() {
 		rules = strings.Split(wordlist, ",")
 	}
 
-	scanner := bufio.NewScanner(f)
+	scanner := bufio.NewScanner(os.Stdin)
 
-	if *banFlag {
-		for scanner.Scan() {
-			//line := scanner.Text()
-			fmt.Print("banning this shit")
-		}
-	} else {
-		for scanner.Scan() {
-			line := scanner.Text()
-			handleScanLine(line, banMode)
-		}
+	for scanner.Scan() {
+		line := scanner.Text()
 
+		handleScanLine(line, banMode)
 	}
 
 	if *uniqueFlag {
